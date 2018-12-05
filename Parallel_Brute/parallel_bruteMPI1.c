@@ -6,6 +6,7 @@
 #include <omp.h>
 #include <time.h>
 #include <mpi.h>
+#include <unistd.h>
 
 #include "../Original_Code/original_aes_functions.c"
 
