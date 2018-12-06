@@ -69,6 +69,7 @@ int main (void)
 
 
   int escCount = 16;
+  int error = 0;
 
   char *a = "0123456789abcdef";
 
@@ -90,10 +91,22 @@ int main (void)
               ciphertext_len = encrypt (plaintext, strlen ((char *)plaintext), possPass, iv, new_ciphertext);
               if (strncmp(new_ciphertext, ciphertext, 16) == 0) {
                 escCount = 0;
-                MPI_Send(&escCount, 1, MPI_INT, world_rank, 0, MPI_COMM_WORLD);
-              } else {
-                MPI_Recv(&escCount, 1, MPI_INT, world_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                error = 1;
               }
+
+              MPI_Bcast(&error, 1, MPI_INT, 0, MPI_COMM_WORLD);
+              if (error != 0) {
+                  if (rank == 0) {
+                      fprintf(stderr, "Error: Program terminated with error code %d\n", error);
+                  }
+                  MPI_Finalize();
+                  exit(error);
+              } 
+
+
+              // MPI_Send(&escCount, 1, MPI_INT, world_rank, 0, MPI_COMM_WORLD);
+              // MPI_Recv(&escCount, 1, MPI_INT, world_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+              // printf("Process %d received number %d from process %d\n",world_rank, escCount, world_rank);
             }
           }
         }
