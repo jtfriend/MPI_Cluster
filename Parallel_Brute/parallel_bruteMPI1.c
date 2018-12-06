@@ -91,22 +91,19 @@ int main (void)
               ciphertext_len = encrypt (plaintext, strlen ((char *)plaintext), possPass, iv, new_ciphertext);
               if (strncmp(new_ciphertext, ciphertext, 16) == 0) {
                 escCount = 0;
-                error = 1;
+                decryptedtext_len = decrypt(ciphertext, ciphertext_len, possPass, iv, decryptedtext);
+                /* Add a NULL terminator. We are expecting printable text */
+                decryptedtext[decryptedtext_len] = '\0';
+
+                /* Show the decrypted text */
+                printf("Decrypted text is:\n");
+                printf("%s\n", decryptedtext);
+
+                clock_t endtime = clock();
+                double time_spent = (double)(endtime - begin) / CLOCKS_PER_SEC;
+                printf(" time: %f\n", time_spent);
+                MPI_Abort(MPI_COMM_WORLD, 1);
               }
-
-              MPI_Bcast(&error, 1, MPI_INT, 0, MPI_COMM_WORLD);
-              if (error != 0) {
-                  if (rank == 0) {
-                      fprintf(stderr, "Error: Program terminated with error code %d\n", error);
-                  }
-                  MPI_Finalize();
-                  exit(error);
-              } 
-
-
-              // MPI_Send(&escCount, 1, MPI_INT, world_rank, 0, MPI_COMM_WORLD);
-              // MPI_Recv(&escCount, 1, MPI_INT, world_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-              // printf("Process %d received number %d from process %d\n",world_rank, escCount, world_rank);
             }
           }
         }
