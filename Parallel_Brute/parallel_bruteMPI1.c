@@ -6,7 +6,6 @@
 #include <omp.h>
 #include <time.h>
 #include <mpi.h>
-#include <unistd.h>
 
 #include "../Original_Code/original_aes_functions.c"
 
@@ -53,15 +52,23 @@ int main (void)
   int name_len;
   MPI_Get_processor_name(processor_name, &name_len);
 
-  char hostname[1024];
-
-  gethostname(hostname, 1024);
-
-  printf("Hostnaaame: %s\n", hostname);
-
   // Print off a hello world message
   printf("Hello world from processor %s, rank %d out of %d processors\n",
           processor_name, world_rank, world_size);
+
+  int number;
+  if (world_rank == 0) {
+      number = -1;
+      MPI_Send(&number, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
+  } else if (world_rank == 1) {
+      MPI_Recv(&number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD,
+              MPI_STATUS_IGNORE);
+      printf("Process 1 received number %d from process 0\n",
+            number);
+  }
+
+
+
   MPI_Finalize();
 
   int escCount = 16;
