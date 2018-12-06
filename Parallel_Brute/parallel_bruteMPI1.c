@@ -92,7 +92,7 @@ int main (void)
                 escCount = 0;
                 MPI_Send(&escCount, 1, MPI_INT, world_rank, 0, MPI_COMM_WORLD);
               } else {
-                MPI_Recv(&escCount, 1, MPI_INT, world_rank, 0, MPI_COMM_WORLD);
+                MPI_Recv(&escCount, 1, MPI_INT, world_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
               }
             }
           }
