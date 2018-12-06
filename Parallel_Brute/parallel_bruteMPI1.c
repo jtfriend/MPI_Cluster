@@ -13,7 +13,7 @@ int main (void)
 {
   clock_t begin = clock();
 
-  unsigned char *key =         "#####804601#####";
+  unsigned char *key =         "#####50440f#####";
   unsigned char possPass[17] = "#####000000#####";
 
   unsigned char *iv = (unsigned char *)"0123456789012345";
